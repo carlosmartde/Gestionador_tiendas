@@ -25,7 +25,7 @@ class ProductController extends Controller
             'name' => 'required',
             'brand' => 'required',
             'purchase_price' => 'required|numeric|min:0',
-            'sale_price' => 'required|numeric|min:0',
+            'sale_price' => 'required|numeric|min:0|gt:purchase_price',
             'stock' => 'required|integer|min:0',
         ]);
 
