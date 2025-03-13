@@ -44,6 +44,21 @@
                                 <span class="badge bg-danger">Agotado</span>
                             @endif
                         </td>
+
+                        <td>
+                            <a href="{{ route('inventario.mostrar-formulario', ['product' => $product->id, 'codigo' => $product->code]) }}" class="btn btn-sm btn-primary"> 
+                                <i class="bi bi-pencil"></i>
+                            </a>                      
+                        </td>
+                        <td>
+                            <form action="{{ route('products.destroy', $product) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
                     </tr>
                     @empty
                     <tr>
