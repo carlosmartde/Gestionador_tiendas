@@ -43,10 +43,6 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
 {
-    // Eliminar los detalles de venta relacionados antes de eliminar el producto
-    \DB::table('sale_details')->where('product_id', $product->id)->delete();
-
-    // Ahora se puede eliminar el producto
     $product->delete();
 
     return redirect()->route('inventory.index')->with('success', 'Producto eliminado correctamente.');
