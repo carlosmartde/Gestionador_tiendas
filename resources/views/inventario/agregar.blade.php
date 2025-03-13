@@ -1,4 +1,4 @@
-@extends('layouts.app') {{-- Asegúrate de usar el layout que corresponda a tu proyecto --}}
+@extends('layouts.app')
 
 @section('content')
 <div class="container">
@@ -78,14 +78,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const formActualizar = document.getElementById('formActualizar');
     const errorMensaje = document.getElementById('error-mensaje');
 
+    // Obtener parámetros de la URL
+    const params = new URLSearchParams(window.location.search);
+    const codigoDesdeURL = params.get('codigo');
+
+    if (codigoDesdeURL) {
+        codigoInput.value = codigoDesdeURL; // Rellenar el campo con el código recibido
+        buscarProducto(codigoDesdeURL); // Ejecutar la búsqueda automáticamente
+    }
+
     buscarBtn.addEventListener('click', function() {
         const codigo = codigoInput.value.trim();
-        
         if (!codigo) {
             mostrarError('Debe ingresar un código de producto');
             return;
         }
+        buscarProducto(codigo);
+    });
 
+    function buscarProducto(codigo) {
         fetch(`{{ route('inventario.buscar-producto') }}?codigo=${codigo}`)
             .then(response => response.json())
             .then(data => {
@@ -99,15 +110,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error:', error);
                 mostrarError('Ocurrió un error al buscar el producto');
             });
-    });
+    }
 
     function mostrarProducto(producto) {
         document.getElementById('producto_id').value = producto.id;
         document.getElementById('nombre_producto').textContent = producto.nombre;
         document.getElementById('stock_actual').textContent = producto.stock;
-        document.getElementById('precio_compra_actual').textContent = `$${producto.precio_compra}`;
+        document.getElementById('precio_compra_actual').textContent = `Q${producto.precio_compra}`;
         
-        // Pre-cargar los valores actuales en los campos de entrada
         document.getElementById('precio_compra').value = producto.precio_compra;
         document.getElementById('precio_venta').value = producto.precio_venta;
         
