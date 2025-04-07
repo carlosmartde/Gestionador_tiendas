@@ -1,5 +1,4 @@
 <?php
-// routes/web.php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -25,7 +24,6 @@ Route::post('/inventario/actualizar', [InventarioController::class, 'actualizarI
 Route::get('/inventario/buscar-producto', [InventarioController::class, 'buscarProducto'])->name('inventario.buscar-producto');
 
 
-// Rutas protegidas
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
@@ -41,5 +39,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Rutas de inventario
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
-    
+    Route::get('/reports', [App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/{id}', [App\Http\Controllers\ReportController::class, 'detail'])->name('reports.detail');
 });
