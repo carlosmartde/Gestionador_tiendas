@@ -49,6 +49,15 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Reporte de ventas</h5>
+                    <p class="card-text">Revisa los datos de las ventas realizadas</p>
+                    <a href="{{ route('reports.index') }}" class="btn btn-primary">Ver Reportes</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

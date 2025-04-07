@@ -37,6 +37,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('inventario.mostrar-formulario') }}">Agregar al Inventario</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('reports.index') }}">Ver Reportes</a>
+                    </li>
                     
                     @endauth
                 </ul>
