@@ -8,6 +8,7 @@
     <p class="lead">¿Qué deseas hacer hoy?</p>
     
     <div class="row mt-5">
+        @if(Auth::user()->isAdmin())
         <div class="col-md-3 mb-4">
             <div class="card h-100">
                 <div class="card-body text-center">
@@ -17,6 +18,7 @@
                 </div>
             </div>
         </div>
+        @endif
         
         <div class="col-md-3 mb-4">
             <div class="card h-100">
@@ -29,6 +31,7 @@
             </div>
         </div>
         
+        @if(Auth::user()->isAdmin())
         <div class="col-md-3 mb-4">
             <div class="card h-100">
                 <div class="card-body text-center">
@@ -49,6 +52,7 @@
                 </div>
             </div>
         </div>
+        
         <div class="col-md-3 mb-4">
             <div class="card h-100">
                 <div class="card-body text-center">
@@ -58,6 +62,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 </div>
 @endsection
