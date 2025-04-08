@@ -25,46 +25,49 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     @auth
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('products.create') }}">Ingresar Producto</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('sales.create') }}">Ventas</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('inventory.index') }}">Inventario</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('inventario.mostrar-formulario') }}">Agregar al Inventario</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('reports.index') }}">Ver Reportes</a>
-                    </li>
-                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('sales.create') }}">Ventas</a>
+                        </li>
+
+                        @if(Auth::user()->isAdmin())
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('products.create') }}">Ingresar Producto</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('inventory.index') }}">Inventario</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('inventario.mostrar-formulario') }}">Agregar al Inventario</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('reports.index') }}">Ver Reportes</a>
+                            </li>
+                        @endif
                     @endauth
                 </ul>
+
                 <ul class="navbar-nav ms-auto">
                     @guest
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">Iniciar Sesión</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register') }}">Registrarse</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('login') }}">Iniciar Sesión</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('register') }}">Registrarse</a>
+                        </li>
                     @else
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            {{ Auth::user()->name }}
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li>
-                                <form action="{{ route('logout') }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item">Cerrar Sesión</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                {{ Auth::user()->name }}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li>
+                                    <form action="{{ route('logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item">Cerrar Sesión</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
                     @endguest
                 </ul>
             </div>

@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             productoTableSeeder::class,
+            RolesTableSeeder::class,
         ]);
 
         User::factory()->create([
