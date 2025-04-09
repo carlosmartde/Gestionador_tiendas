@@ -1,17 +1,38 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
-    {
-        $products = Product::all();
-        return view('products.index', compact('products'));
+    private function checkRole($allowedRoles = ['admin'])
+{
+    $userRole = Auth::user()->rol ?? null;
+    
+    if (!$userRole || !in_array($userRole, $allowedRoles)) {
+        if ($userRole === 'vendedor') {
+            return redirect()->route('sales.create')
+                ->with('error', 'No tienes permiso para acceder a esta sección.');
+        }
+        
+        return redirect()->route('login');
     }
+    
+    return null; // No redirect needed
+}
+public function index()
+{
+    // Verificar permisos
+    $redirect = $this->checkRole(['admin']);
+    if ($redirect) return $redirect;
+    
+    // Código normal del método...
+    $products = Product::all();
+    return view('products.index', compact('products'));
+}
 
     public function create()
     {

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\Sale;
 use App\Models\SaleDetail;
@@ -11,6 +12,21 @@ use Carbon\Carbon;
 
 class ReportController extends Controller
 {
+    private function checkRole($allowedRoles = ['admin'])
+{
+    $userRole = Auth::user()->rol ?? null;
+    
+    if (!$userRole || !in_array($userRole, $allowedRoles)) {
+        if ($userRole === 'vendedor') {
+            return redirect()->route('sales.create')
+                ->with('error', 'No tienes permiso para acceder a esta sección.');
+        }
+        
+        return redirect()->route('login');
+    }
+    
+    return null; // No redirect needed
+}
     public function index(Request $request)
     {
         $period = $request->period ?? 'day';

@@ -14,22 +14,36 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    // Dentro de tu método login (o el que maneje la autenticación manual):
     public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+{
+    $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            return redirect()->intended('/dashboard');
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+
+        $user = Auth::user();
+        
+        // Guardar el rol en la sesión para fácil acceso
+        session(['user_role' => $user->rol]);
+        
+        if ($user->rol === 'admin') {
+            return redirect()->route('dashboard');
+        } elseif ($user->rol === 'vendedor') {
+            return redirect()->route('sales.create');
         }
 
-        return back()->withErrors([
-            'email' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',
+        // Por si hay un rol desconocido
+        Auth::logout();
+        return redirect('/login')->withErrors([
+            'rol' => 'Rol no autorizado.',
         ]);
     }
+
+    return back()->withErrors([
+        'email' => 'Las credenciales no coinciden.',
+    ]);
+}
 
     public function showRegistrationForm()
     {
@@ -37,27 +51,21 @@ class AuthController extends Controller
     }
 
     public function register(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users',
-        'password' => 'required|string|min:8|confirmed',
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
 
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-    ]);
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
 
-    // Asignar rol de vendedor por defecto
-    $vendedorRole = \App\Models\Role::where('slug', 'vendedor')->first();
-    if ($vendedorRole) {
-        $user->roles()->attach($vendedorRole);
+        return redirect('/login');
     }
-
-    return redirect('/login');
-}
 
     public function logout(Request $request)
     {
