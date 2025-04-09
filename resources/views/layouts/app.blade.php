@@ -40,6 +40,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('reports.index') }}">Ver Reportes</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('register') }}">Crear Usuario</a>
+                    </li>
                     
                     @endauth
                 </ul>
@@ -47,9 +50,6 @@
                     @guest
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('login') }}">Iniciar Sesión</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register') }}">Registrarse</a>
                     </li>
                     @else
                     <li class="nav-item dropdown">

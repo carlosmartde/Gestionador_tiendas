@@ -57,6 +57,14 @@
                     <a href="{{ route('reports.index') }}" class="btn btn-primary">Ver Reportes</a>
                 </div>
             </div>
+        </div><div class="col-md-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Crear Usuario</h5>
+                    <p class="card-text">Crear nuevos usuarios admin o vendedores</p>
+                    <a href="{{ route('register') }}" class="btn btn-primary">Ver Reportes</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
