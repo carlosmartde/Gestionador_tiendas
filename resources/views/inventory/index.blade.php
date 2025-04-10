@@ -1,4 +1,3 @@
-<!-- resources/views/inventory/index.blade.php -->
 @extends('layouts.app')
 
 @section('title', 'Inventario')
@@ -6,15 +5,22 @@
 @section('content')
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Inventario de Productos</h5>
+        <h5 class="mb-0">
+            <i class="bi bi-box me-2"></i>Inventario de Productos
+        </h5>
     </div>
     <div class="card-body">
         <div class="mb-3">
-            <input type="text" id="search-input" class="form-control" placeholder="Buscar por nombre o código...">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input type="text" id="search-input" class="form-control" placeholder="Buscar por nombre o código...">
+            </div>
         </div>
 
         <div class="table-responsive">
-            <table class="table table-striped" id="inventory-table">
+            <table class="table table-striped table-hover" id="inventory-table">
                 <thead>
                     <tr>
                         <th>Código</th>
@@ -24,6 +30,7 @@
                         <th>Precio Venta</th>
                         <th>Stock</th>
                         <th>Estado</th>
+                        <th colspan="2" class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,16 +52,16 @@
                             @endif
                         </td>
 
-                        <td>
+                        <td class="text-center">
                             <a href="{{ route('inventario.mostrar-formulario', ['product' => $product->id, 'codigo' => $product->code]) }}" class="btn btn-sm btn-primary"> 
                                 <i class="bi bi-pencil"></i>
                             </a>                      
                         </td>
-                        <td>
-                            <form action="{{ route('products.destroy', $product) }}" method="POST">
+                        <td class="text-center">
+                            <form action="{{ route('products.destroy', $product) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de eliminar este producto?')">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </form>
@@ -62,7 +69,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="text-center">No hay productos en el inventario</td>
+                        <td colspan="9" class="text-center">No hay productos en el inventario</td>
                     </tr>
                     @endforelse
                 </tbody>

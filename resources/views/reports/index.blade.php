@@ -27,12 +27,13 @@
                                 <option value="year" {{ $period == 'year' ? 'selected' : '' }}>Año</option>
                             </select>
                         </div>
-                        
+                        <!--
                         <div class="col-md-3">
-                            <label for="date" class="form-label">Fecha</label>
-                            <input type="date" name="date" id="date" class="form-control" value="{{ $date }}">
+                            <label for="fecha" class="form-label fw-bold">Fecha</label>
+                            <input type="text" class="form-control datepicker" name="fecha" id="fecha" value="{{ $date }}">
                         </div>
-                        
+                         -->
+                    
                         <div class="col-md-3">
                             <label for="user_id" class="form-label">Usuario</label>
                             <select name="user_id" id="user_id" class="form-select">

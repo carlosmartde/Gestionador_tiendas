@@ -5,13 +5,18 @@
 @section('content')
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Lista de Productos</h5>
-        <a href="{{ route('products.create') }}" class="btn btn-primary btn-sm">Nuevo Producto</a>
+        <h5 class="mb-0">
+            <i class="bi bi-box-seam me-2"></i>Lista de Productos
+        </h5>
+        <a href="{{ route('products.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i>Nuevo Producto
+        </a>
     </div>
     <div class="card-body">
         @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         @endif
 
@@ -33,8 +38,8 @@
                         <td>{{ $product->code }}</td>
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->brand }}</td>
-                        <td>${{ number_format($product->purchase_price, 2) }}</td>
-                        <td>${{ number_format($product->sale_price, 2) }}</td>
+                        <td>Q{{ number_format($product->purchase_price, 2) }}</td>
+                        <td>Q{{ number_format($product->sale_price, 2) }}</td>
                         <td>{{ $product->stock }}</td>
                     </tr>
                     @empty
