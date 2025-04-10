@@ -7,6 +7,7 @@ use App\Http\Controllers\SaleController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 // Rutas públicas
 Route::get('/', function () {
@@ -16,9 +17,27 @@ Route::get('/', function () {
 // Rutas de autenticación
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/register', function () {
+    if (Auth::check() && Auth::user()->rol === 'admin') {
+        return app()->call([app(AuthController::class), 'showRegistrationForm']);
+    } else {
+        return redirect()->route('sales.create')->with('error', 'Acceso denegado.');
+    }
+})->middleware('auth')->name('register');
+
+use App\Http\Auth\RegisteredUserController;
+
+Route::post('/register', function (Request $request) {
+    if (Auth::check() && Auth::user()->rol === 'admin') {
+        return app()->call([app(RegisteredUserController::class), 'store'], ['request' => $request]);
+    } else {
+        return redirect()->route('sales.create')->with('error', 'Acceso denegado.');
+    }
+})->middleware('auth');
+
+
 
 // Rutas que requieren autenticación
 Route::middleware(['auth'])->group(function () {
@@ -94,14 +113,6 @@ Route::middleware(['auth'])->group(function () {
         }
         return app()->call([app(ProductController::class), 'destroy'], ['product' => $product]);
     })->name('products.destroy');
-
-    Route::get('/product/code/{code}', function ($code) {
-        if (Auth::user()->rol !== 'admin') {
-            return redirect()->route('sales.create')
-                ->with('error', 'No tienes permiso para acceder a esta sección.');
-        }
-        return app()->call([app(ProductController::class), 'getProductByCode'], ['code' => $code]);
-    })->name('product.code');
 
     // Rutas de inventario (solo admin)
     Route::get('/inventory', function () {

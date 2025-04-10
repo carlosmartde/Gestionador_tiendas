@@ -9,7 +9,6 @@
     @guest
     <div class="mt-5">
         <a href="{{ route('login') }}" class="btn btn-primary me-3">Iniciar Sesión</a>
-        <a href="{{ route('register') }}" class="btn btn-outline-primary">Registrarse</a>
     </div>
     @else
     <div class="mt-5">
