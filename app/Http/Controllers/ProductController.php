@@ -64,10 +64,8 @@ public function index()
 
     public function destroy(Product $product)
 {
-    $product->delete();
+    $product->delete(); // Esto usará soft delete
 
-    return redirect()->route('inventory.index')->with('success', 'Producto eliminado correctamente.');
+    return redirect()->route('inventory.index')->with('success', 'Producto marcado como eliminado.');
 }
-
-
 }

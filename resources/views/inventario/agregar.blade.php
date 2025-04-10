@@ -6,7 +6,7 @@
 <div class="card">
     <div class="card-header">
         <h5 class="mb-0">
-            <i class="bi bi-plus-square me-2"></i>Agregar al Inventario
+            <i class="bi bi-plus-square me-2"></i>Registrar Compra
         </h5>
     </div>
 
@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
         buscarProducto(codigoDesdeURL); // Ejecutar la búsqueda automáticamente
     }
 
+    // Evento para el botón de búsqueda
     buscarBtn.addEventListener('click', function() {
         const codigo = codigoInput.value.trim();
         if (!codigo) {
@@ -109,6 +110,19 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         buscarProducto(codigo);
+    });
+
+    // Evento para detectar la tecla Enter
+    codigoInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevenir el comportamiento predeterminado de la tecla Enter
+            const codigo = codigoInput.value.trim();
+            if (!codigo) {
+                mostrarError('Debe ingresar un código de producto');
+                return;
+            }
+            buscarProducto(codigo);
+        }
     });
 
     function buscarProducto(codigo) {
@@ -146,5 +160,6 @@ document.addEventListener('DOMContentLoaded', function() {
         formActualizar.classList.add('d-none');
     }
 });
+
 </script>
 @endsection
