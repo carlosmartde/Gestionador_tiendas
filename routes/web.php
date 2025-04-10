@@ -106,13 +106,8 @@ Route::middleware(['auth'])->group(function () {
         return app()->call([app(ProductController::class), 'update'], ['request' => $request, 'product' => $product]);
     })->name('products.update');
 
-    Route::delete('/products/{product}', function ($product) {
-        if (Auth::user()->rol !== 'admin') {
-            return redirect()->route('sales.create')
-                ->with('error', 'No tienes permiso para acceder a esta sección.');
-        }
-        return app()->call([app(ProductController::class), 'destroy'], ['product' => $product]);
-    })->name('products.destroy');
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
 
     // Rutas de inventario (solo admin)
     Route::get('/inventory', function () {

@@ -238,8 +238,9 @@
 <body>
     <!-- Verifica si estamos en la página de welcome para ajustar clases CSS -->
     @php
-        $isWelcomePage = request()->route()->getName() === 'welcome' || request()->path() === '/';
-    @endphp
+    $isWelcomePage = request()->route()->getName() === 'welcome' || request()->path() === '/' || request()->route()->getName() === 'login';
+@endphp
+
 
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container-fluid d-flex justify-content-center">
@@ -278,7 +279,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('inventario.mostrar-formulario') ? 'active' : '' }}" href="{{ route('inventario.mostrar-formulario') }}">
-                        <i class="bi bi-plus-square"></i> Agregar al Inventario
+                        <i class="bi bi-plus-square"></i> Registra Compra
                     </a>
                 </li>
                 <li class="nav-item">
