@@ -181,6 +181,58 @@
             }
         }
     </style>
+    <style>
+        /* Estilos para el select personalizado */
+        .custom-select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        
+        .custom-select-trigger {
+            border: 1px solid #ced4da;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.25rem;
+            background-color: white;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .custom-select-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 99999;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 0.25rem;
+            max-height: 250px;
+            overflow-y: auto;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .custom-select-options.show {
+            display: block;
+        }
+        
+        .custom-select-option {
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+        }
+        
+        .custom-select-option:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .custom-select-option.selected {
+            background-color: #e9ecef;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @yield('styles')
 </head>
 <body>
@@ -280,6 +332,103 @@
             }
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Reemplazar los selects problemáticos
+            document.querySelectorAll('.form-select').forEach(select => {
+                // Solo reemplazar si no está ya procesado
+                if (select.dataset.processed) return;
+                select.dataset.processed = 'true';
+                
+                // Crear wrapper
+                const wrapper = document.createElement('div');
+                wrapper.className = 'custom-select-wrapper';
+                select.parentNode.insertBefore(wrapper, select);
+                
+                // Crear trigger (el elemento visible)
+                const trigger = document.createElement('div');
+                trigger.className = 'custom-select-trigger';
+                trigger.innerHTML = `
+                    <span>${select.options[select.selectedIndex]?.text || 'Seleccionar'}</span>
+                    <i class="bi bi-chevron-down"></i>
+                `;
+                wrapper.appendChild(trigger);
+                
+                // Crear options container (el dropdown)
+                const options = document.createElement('div');
+                options.className = 'custom-select-options';
+                wrapper.appendChild(options);
+                
+                // Mover al final del body para asegurar que esté por encima de todo
+                document.body.appendChild(options);
+                
+                // Poblar opciones
+                Array.from(select.options).forEach((option, index) => {
+                    const opt = document.createElement('div');
+                    opt.className = 'custom-select-option';
+                    if (index === select.selectedIndex) opt.classList.add('selected');
+                    opt.textContent = option.text;
+                    opt.dataset.value = option.value;
+                    options.appendChild(opt);
+                    
+                    // Click en una opción
+                    opt.addEventListener('click', () => {
+                        select.value = option.value;
+                        trigger.querySelector('span').textContent = option.text;
+                        options.querySelectorAll('.custom-select-option').forEach(o => {
+                            o.classList.remove('selected');
+                        });
+                        opt.classList.add('selected');
+                        options.classList.remove('show');
+                        
+                        // Disparar evento change en el select original
+                        select.dispatchEvent(new Event('change', { bubbles: true }));
+                    });
+                });
+                
+                // Toggle dropdown
+                trigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isOpen = options.classList.contains('show');
+                    
+                    // Cerrar todos los otros dropdowns
+                    document.querySelectorAll('.custom-select-options').forEach(o => {
+                        o.classList.remove('show');
+                    });
+                    
+                    if (!isOpen) {
+                        options.classList.add('show');
+                        
+                        // Posicionar el dropdown correctamente
+                        const rect = trigger.getBoundingClientRect();
+                        options.style.width = rect.width + 'px';
+                        options.style.left = rect.left + 'px';
+                        options.style.top = (rect.bottom + window.scrollY) + 'px';
+                    }
+                });
+                
+                // Cerrar dropdown cuando se hace clic fuera
+                document.addEventListener('click', () => {
+                    options.classList.remove('show');
+                });
+                
+                // Ocultar el select original
+                select.style.display = 'none';
+                wrapper.appendChild(select);
+            });
+        });
+        </script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    flatpickr('.datepicker', {
+        locale: 'es', // Establece el idioma a español
+        dateFormat: 'Y-m-d', // Puedes ajustar el formato de fecha según lo que necesites
+    });
+});
+</script>
 
     @yield('scripts')
 </body>
