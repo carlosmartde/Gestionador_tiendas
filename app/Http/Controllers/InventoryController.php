@@ -10,7 +10,7 @@ class InventoryController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        $products = Product::paginate(10);
         return view('inventory.index', compact('products'));
     }
 
@@ -27,6 +27,6 @@ class InventoryController extends Controller
         return redirect()->route('login');
     }
     
-    return null; // No redirect needed
+    return null;
 }
 }
