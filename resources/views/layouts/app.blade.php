@@ -25,6 +25,8 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     @auth
+                    @if(Auth::user()->rol === 'admin')
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('products.create') }}">Ingresar Producto</a>
                     </li>
@@ -43,7 +45,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('register') }}">Crear Usuario</a>
                     </li>
-                    
+                    @endif
                     @endauth
                 </ul>
                 <ul class="navbar-nav ms-auto">

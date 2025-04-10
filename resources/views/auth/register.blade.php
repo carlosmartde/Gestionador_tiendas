@@ -43,6 +43,18 @@
                         <input id="password-confirm" type="password" class="form-control" 
                                name="password_confirmation" required autocomplete="new-password">
                     </div>
+
+                    <div class="mb-3">
+                        <label for="rol" class="form-label">Rol</label>
+                        <select id="rol" name="rol" class="form-select @error('rol') is-invalid @enderror" required>
+                            <option value="" disabled selected>Seleccionar rol</option>
+                            <option value="admin" {{ old('rol') == 'admin' ? 'selected' : '' }}>Administrador</option>
+                            <option value="vendedor" {{ old('rol') == 'vendedor' ? 'selected' : '' }}>Vendedor</option>
+                        </select>
+                        @error('rol')
+                            <span class="invalid-feedback d-block">{{ $message }}</span>
+                        @enderror
+                    </div>
                     
                     <button type="submit" class="btn btn-primary">Registrarse</button>
                 </form>
@@ -50,4 +62,18 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if (session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: '¡Éxito!',
+        text: '{{ session('success') }}',
+        confirmButtonText: 'Aceptar'
+    });
+</script>
+@endif
 @endsection
