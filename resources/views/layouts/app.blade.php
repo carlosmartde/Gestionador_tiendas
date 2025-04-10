@@ -13,73 +13,212 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .content-wrapper {
+            display: flex;
+            flex: 1;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: #f8f9fa;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 56px;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+        
+        .sidebar .nav-link {
+            color: #333;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0;
+            margin-bottom: 0.25rem;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: #e9ecef;
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        .sidebar .nav-link i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-header {
+            padding: 0.75rem 1.25rem;
+            color: #0d6efd;
+            text-decoration: none;
+            display: block;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar-header:hover {
+            background-color: #e9ecef;
+            color: #0a58ca;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            padding: 20px;
+            transition: margin-left 0.3s;
+        }
+        
+        /* Estilos cuando el contenido debe ocupar toda la pantalla */
+        .main-content.w-100 {
+            margin-left: 0;
+            width: 100%;
+        }
+        
+        footer {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            transition: margin-left 0.3s;
+        }
+        
+        /* Estilos de footer cuando debe ocupar toda la pantalla */
+        footer.w-100 {
+            margin-left: 0;
+            width: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -250px;
+                transition: margin-left 0.3s;
+            }
+            
+            .sidebar.show {
+                margin-left: 0;
+            }
+            
+            .main-content, footer {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .main-content.sidebar-open, footer.sidebar-open {
+                margin-left: 250px;
+                width: calc(100% - 250px);
+            }
+        }
+    </style>
     @yield('styles')
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="/dashboard">MINI-MARKET</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    @auth
-                    @if(Auth::user()->rol === 'admin')
+    <!-- Verifica si estamos en la página de welcome para ajustar clases CSS -->
+    @php
+        $isWelcomePage = request()->route()->getName() === 'welcome' || request()->path() === '/';
+    @endphp
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('products.create') }}">Ingresar Producto</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('sales.create') }}">Ventas</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('inventory.index') }}">Inventario</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('inventario.mostrar-formulario') }}">Agregar al Inventario</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('reports.index') }}">Ver Reportes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register') }}">Crear Usuario</a>
-                    </li>
-                    @endif
-                    @endauth
-                </ul>
-                <ul class="navbar-nav ms-auto">
-                    @guest
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">Iniciar Sesión</a>
-                    </li>
-                    @else
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            {{ Auth::user()->name }}
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li>
-                                <form action="{{ route('logout') }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item">Cerrar Sesión</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                    @endguest
-                </ul>
-            </div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container-fluid d-flex justify-content-center">
+        <a class="navbar-brand" href="/dashboard">MINI-MARKET</a>
+        <button class="navbar-toggler" type="button" id="sidebarToggle">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>
+
+
+    <div class="content-wrapper" style="margin-top: 56px;">
+        <!-- Sidebar - solo se muestra si no es la página de welcome y el usuario está autenticado -->
+        @auth
+        @if(!$isWelcomePage)
+        <div class="sidebar">
+            <a href="/dashboard" class="sidebar-header">
+                <i class="bi bi-house-door"></i> Menu Principal
+            </a>
+            <ul class="nav flex-column">
+                @if(Auth::user()->rol === 'admin')
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('products.create') ? 'active' : '' }}" href="{{ route('products.create') }}">
+                        <i class="bi bi-bag-plus"></i> Ingresar Producto
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('sales.create') ? 'active' : '' }}" href="{{ route('sales.create') }}">
+                        <i class="bi bi-cart-plus"></i> Ventas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('inventory.index') ? 'active' : '' }}" href="{{ route('inventory.index') }}">
+                        <i class="bi bi-box"></i> Inventario
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('inventario.mostrar-formulario') ? 'active' : '' }}" href="{{ route('inventario.mostrar-formulario') }}">
+                        <i class="bi bi-plus-square"></i> Agregar al Inventario
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('reports.index') ? 'active' : '' }}" href="{{ route('reports.index') }}">
+                        <i class="bi bi-file-earmark-bar-graph"></i> Ver Reportes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('register') ? 'active' : '' }}" href="{{ route('register') }}">
+                        <i class="bi bi-person-plus"></i> Crear Usuario
+                    </a>
+                </li>
+                @endif
+                <li class="nav-item mt-3">
+                    <form action="{{ route('logout') }}" method="POST" class="px-3">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-danger w-100">
+                            <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                        </button>
+                    </form>
+                </li>
+            </ul>
         </div>
-    </nav>
+        @endif
+        @endauth
 
-    <main class="container mt-4">
-        @yield('content')
-    </main>
+        <!-- Main content - ajusta las clases según si es la página de welcome -->
+        <main class="main-content {{ $isWelcomePage ? 'w-100 m-0' : '' }}">
+            @yield('content')
+        </main>
+    </div>
 
-    <footer class="text-center mt-5 py-3 bg-light">
+    <footer class="text-center py-3 bg-light {{ $isWelcomePage ? 'w-100 m-0' : '' }}">
         <p>MINI-MARKET &copy; {{ date('Y') }}</p>
     </footer>
+
+    <script>
+        // Toggle sidebar on mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content');
+            const footer = document.querySelector('footer');
+            
+            if (sidebarToggle && sidebar) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('show');
+                    mainContent.classList.toggle('sidebar-open');
+                    footer.classList.toggle('sidebar-open');
+                });
+            }
+        });
+    </script>
 
     @yield('scripts')
 </body>
