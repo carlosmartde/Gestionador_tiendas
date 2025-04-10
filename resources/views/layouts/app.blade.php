@@ -14,10 +14,27 @@
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+        :root {
+            /* Nueva paleta de colores moderna */
+            --primary-color: #3a86ff;
+            --primary-dark: #2667cc;
+            --secondary-color: #8338ec;
+            --accent-color: #ff006e;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --background-color: #f0f2f5;
+            --card-background: #ffffff;
+            --sidebar-bg: #212529;
+            --sidebar-text: #f8f9fa;
+            --sidebar-hover: #3a86ff;
+            --sidebar-active: #ff006e;
+        }
+        
         body {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            background-color: var(--background-color);
         }
         
         .content-wrapper {
@@ -27,8 +44,8 @@
         
         .sidebar {
             width: 250px;
-            background-color: #f8f9fa;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: var(--sidebar-bg);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             position: fixed;
             top: 56px;
             bottom: 0;
@@ -39,19 +56,23 @@
         }
         
         .sidebar .nav-link {
-            color: #333;
+            color: var(--sidebar-text);
             padding: 0.75rem 1.25rem;
-            border-radius: 0;
-            margin-bottom: 0.25rem;
+            border-radius: 5px;
+            margin: 0.25rem 0.75rem;
+            transition: all 0.3s ease;
         }
         
         .sidebar .nav-link:hover {
-            background-color: #e9ecef;
+            background-color: var(--sidebar-hover);
+            color: white;
+            transform: translateX(5px);
         }
         
         .sidebar .nav-link.active {
-            background-color: #0d6efd;
+            background-color: var(--sidebar-active);
             color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
         
         .sidebar .nav-link i {
@@ -62,16 +83,17 @@
         
         .sidebar-header {
             padding: 0.75rem 1.25rem;
-            color: #0d6efd;
+            color: var(--sidebar-text);
             text-decoration: none;
             display: block;
             font-weight: bold;
             margin-bottom: 1rem;
+            transition: all 0.3s ease;
         }
         
         .sidebar-header:hover {
-            background-color: #e9ecef;
-            color: #0a58ca;
+            color: var(--sidebar-hover);
+            transform: translateX(5px);
         }
         
         .main-content {
@@ -91,6 +113,8 @@
             margin-left: 250px;
             width: calc(100% - 250px);
             transition: margin-left 0.3s;
+            background-color: var(--dark-color) !important;
+            color: var(--light-color) !important;
         }
         
         /* Estilos de footer cuando debe ocupar toda la pantalla */
@@ -99,6 +123,43 @@
             width: 100%;
         }
         
+        /* Estilos para las cards */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--card-background);
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Estilos para los botones */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+        
+        /* Estilos para la navbar */
+        .navbar-dark {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        /* Estilos responsivos */
         @media (max-width: 768px) {
             .sidebar {
                 margin-left: -250px;
@@ -128,14 +189,14 @@
         $isWelcomePage = request()->route()->getName() === 'welcome' || request()->path() === '/';
     @endphp
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-    <div class="container-fluid d-flex justify-content-center">
-        <a class="navbar-brand" href="/dashboard">MINI-MARKET</a>
-        <button class="navbar-toggler" type="button" id="sidebarToggle">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</nav>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid d-flex justify-content-center">
+            <a class="navbar-brand" href="/dashboard">MINI-MARKET</a>
+            <button class="navbar-toggler" type="button" id="sidebarToggle">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
 
 
     <div class="content-wrapper" style="margin-top: 56px;">
@@ -198,8 +259,8 @@
         </main>
     </div>
 
-    <footer class="text-center py-3 bg-light {{ $isWelcomePage ? 'w-100 m-0' : '' }}">
-        <p>MINI-MARKET &copy; {{ date('Y') }}</p>
+    <footer class="text-center py-3 {{ $isWelcomePage ? 'w-100 m-0' : '' }}">
+        <p class="m-0">MINI-MARKET &copy; {{ date('Y') }}</p>
     </footer>
 
     <script>
