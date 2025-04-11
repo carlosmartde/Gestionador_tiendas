@@ -27,12 +27,12 @@
                                 <option value="year" {{ $period == 'year' ? 'selected' : '' }}>Año</option>
                             </select>
                         </div>
-                        <!--
+                      
                         <div class="col-md-3">
-                            <label for="fecha" class="form-label fw-bold">Fecha</label>
+                            <label for="fecha" class="form-label ">Fecha</label>
                             <input type="text" class="form-control datepicker" name="fecha" id="fecha" value="{{ $date }}">
                         </div>
-                         -->
+                         
                     
                         <div class="col-md-3">
                             <label for="user_id" class="form-label">Usuario</label>
@@ -51,6 +51,47 @@
                             <a href="{{ route('reports.index') }}" class="btn btn-secondary ms-2">Reiniciar</a>
                         </div>
                     </form>
+
+                    <div class="row mb-3">
+
+                        <!-- Total en ventas -->
+                        <div class="col-md-4 mb-3">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title text-muted">Total en ventas</h6>
+                                    <h4 class="text-primary">Q{{ number_format($sales->sum('total'), 2) }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <!-- Total en costos (incompleto)-->
+                        <div class="col-md-4 mb-3">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title text-muted">Total en costos</h6>
+                                    <h4 class="text-warning">Q0.00</h4> <!-- Puedes reemplazar 0.00 por tu lógica -->
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <!-- Ganancias  (incompleto)-->
+                        <div class="col-md-4 mb-3">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title text-muted">Ganancias</h6>
+                                    <h4 class="text-success">Q0.00</h4> <!-- Puedes reemplazar 0.00 por tu lógica -->
+                                </div>
+                            </div>
+                        </div>
+                    
+                    </div>
+                    <!-- Gráfico de ventas -->
+                    <!-- se tiene que ver en dias(horas), semanas(dias), meses(semanas), años(meses) -->
+                    <div class="mb-4">
+                        <canvas id="salesChart" style="height: 400px;"></canvas>
+                    </div>
+
+
 
                     <!-- Tabla de resultados -->
                     <div class="table-responsive">
@@ -81,14 +122,12 @@
                                     </tr>
                                 @endforelse
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="3" class="text-end">Total:</th>
-                                    <th>Q{{ number_format($sales->sum('total'), 2) }}</th>
-                                    <th></th>
-                                </tr>
-                            </tfoot>
+
                         </table>
+                        <!-- Paginación estilo Bootstrap -->
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $sales->onEachSide(1)->links('vendor.pagination.bootstrap-5') }}
+                </div>
                     </div>
                 </div>
             </div>

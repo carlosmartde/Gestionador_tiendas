@@ -27,17 +27,20 @@ class ReportController extends Controller
     
     return null; // No redirect needed
 }
-    public function index(Request $request)
-    {
-        $period = $request->period ?? 'day';
-        $date = $request->date ?? Carbon::now()->format('Y-m-d');
-        $userId = $request->user_id ?? 'all';
-        
-        $users = User::orderBy('name')->get();
-        $sales = $this->getSalesByPeriod($period, $date, $userId);
-        
-        return view('reports.index', compact('sales', 'period', 'date', 'users', 'userId'));
-    }
+public function index(Request $request)
+{ 
+    $period = $request->period ?? 'day';
+    $date = $request->date ?? Carbon::now()->format('Y-m-d');
+    $userId = $request->user_id ?? 'all';
+
+    $users = User::orderBy('name')->get();
+
+    $sales = $this->getSalesByPeriod($period, $date, $userId)
+                  ->paginate(10);
+
+    return view('reports.index', compact('sales', 'period', 'date', 'users', 'userId'));
+}
+
     
     public function detail($id)
     {
@@ -81,6 +84,6 @@ class ReportController extends Controller
                 break;
         }
         
-        return $query->orderBy('sales.created_at', 'desc')->get();
+        return $query->orderBy('sales.created_at', 'desc');
     }
 }
