@@ -13,7 +13,7 @@ class productoTableSeeder extends Seeder
         $faker = Faker::create();
 
         // Generar 10 productos de ejemplo usando el modelo Product
-        foreach (range(1, 150) as $index) {
+        foreach (range(1, 100) as $index) {
             Product::create([
                 'code' => $faker->unique()->numberBetween(1000, 9999), // Código aleatoriogit 
                 'name' => $faker->word, // Nombre aleatorio
