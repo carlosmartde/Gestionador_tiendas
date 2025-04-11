@@ -28,17 +28,31 @@ class ReportController extends Controller
     return null; // No redirect needed
 }
 public function index(Request $request)
-{ 
+{
     $period = $request->period ?? 'day';
     $date = $request->date ?? Carbon::now()->format('Y-m-d');
     $userId = $request->user_id ?? 'all';
 
     $users = User::orderBy('name')->get();
 
-    $sales = $this->getSalesByPeriod($period, $date, $userId)
-                  ->paginate(10);
+    // Todas las ventas en el rango (sin paginar aún)
+    $salesQuery = $this->getSalesByPeriod($period, $date, $userId);
+    $sales = $salesQuery->paginate(10);
 
-    return view('reports.index', compact('sales', 'period', 'date', 'users', 'userId'));
+    // Obtener todos los IDs de las ventas en esta consulta
+    $saleIds = $salesQuery->pluck('sales.id');
+
+    // Obtener los detalles de venta relacionados y sumar totales
+    $totales = SaleDetail::whereIn('sale_id', $saleIds)
+        ->selectRaw('SUM(cost_total) as total_cost, SUM(profit) as total_profit')
+        ->first();
+
+    $totalCost = $totales->total_cost ?? 0;
+    $totalProfit = $totales->total_profit ?? 0;
+
+    return view('reports.index', compact(
+        'sales', 'period', 'date', 'users', 'userId', 'totalCost', 'totalProfit'
+    ));
 }
 
     

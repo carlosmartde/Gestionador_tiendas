@@ -15,9 +15,11 @@ class CreateSaleDetailsTable extends Migration
             $table->integer('quantity');
             $table->decimal('price', 10, 2);
             $table->decimal('subtotal', 10, 2);
+            $table->decimal('cost_total', 10, 2);
+            $table->decimal('profit', 10, 2)->nullable(); 
             $table->timestamps();
         });
-    }
+    } 
 
     public function down()
     {

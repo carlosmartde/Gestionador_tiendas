@@ -54,44 +54,43 @@
 
                     <div class="row mb-3">
 
-                        <!-- Total en ventas -->
-                        <div class="col-md-4 mb-3">
-                            <div class="card shadow-sm border-0">
-                                <div class="card-body text-center">
-                                    <h6 class="card-title text-muted">Total en ventas</h6>
-                                    <h4 class="text-primary">Q{{ number_format($sales->sum('total'), 2) }}</h4>
-                                </div>
-                            </div>
-                        </div>
-                    
-                        <!-- Total en costos (incompleto)-->
-                        <div class="col-md-4 mb-3">
-                            <div class="card shadow-sm border-0">
-                                <div class="card-body text-center">
-                                    <h6 class="card-title text-muted">Total en costos</h6>
-                                    <h4 class="text-warning">Q0.00</h4> <!-- Puedes reemplazar 0.00 por tu lógica -->
-                                </div>
-                            </div>
-                        </div>
-                    
-                        <!-- Ganancias  (incompleto)-->
-                        <div class="col-md-4 mb-3">
-                            <div class="card shadow-sm border-0">
-                                <div class="card-body text-center">
-                                    <h6 class="card-title text-muted">Ganancias</h6>
-                                    <h4 class="text-success">Q0.00</h4> <!-- Puedes reemplazar 0.00 por tu lógica -->
-                                </div>
-                            </div>
-                        </div>
-                    
-                    </div>
-                    <!-- Gráfico de ventas -->
-                    <!-- se tiene que ver en dias(horas), semanas(dias), meses(semanas), años(meses) -->
+<!-- Total en ventas -->
+<div class="col-md-4 mb-3">
+    <div class="card shadow-sm border-0">
+        <div class="card-body text-center">
+            <h6 class="card-title text-muted">Total en ventas</h6>
+            <h4 class="text-primary">Q{{ number_format($sales->sum('total'), 2) }}</h4>
+        </div>
+    </div>
+</div>
+
+<!-- Total en costos -->
+<div class="col-md-4 mb-3">
+    <div class="card shadow-sm border-0">
+        <div class="card-body text-center">
+            <h6 class="card-title text-muted">Total en costos</h6>
+            <h4 class="text-warning">Q{{ number_format($totalCost, 2) }}</h4>
+        </div>
+    </div>
+</div>
+
+<!-- Ganancias -->
+<div class="col-md-4 mb-3">
+    <div class="card shadow-sm border-0">
+        <div class="card-body text-center">
+            <h6 class="card-title text-muted">Ganancias</h6>
+            <h4 class="text-success">Q{{ number_format($totalProfit, 2) }}</h4>
+        </div>
+    </div>
+</div>
+                    <!-- Gráfico de ventas 
+                        
+                   se tiene que ver en dias(horas), semanas(dias), meses(semanas), años(meses) 
                     <div class="mb-4">
                         <canvas id="salesChart" style="height: 400px;"></canvas>
                     </div>
 
-
+                -->
 
                     <!-- Tabla de resultados -->
                     <div class="table-responsive">
