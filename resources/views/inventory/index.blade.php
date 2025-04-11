@@ -59,7 +59,7 @@
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                 </td>
-
+                                <!--
                                 <td class="text-center">
                                     <form action="{{ route('products.destroy', $product) }}" method="POST" class="d-inline">
                                         @csrf
@@ -70,6 +70,7 @@
                                         </button>
                                     </form>
                                 </td>
+                            -->
                             </tr>
                         @empty
                             <tr>
