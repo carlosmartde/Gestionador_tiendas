@@ -97,24 +97,38 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('search-input');
-            const table = document.getElementById('inventory-table');
-            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            const tableContainer = document.querySelector('.table-responsive');
+            let searchTimer;
 
             searchInput.addEventListener('keyup', function () {
-                const term = this.value.toLowerCase();
-
-                for (let i = 0; i < rows.length; i++) {
-                    const code = rows[i].cells[0].textContent.toLowerCase();
-                    const name = rows[i].cells[1].textContent.toLowerCase();
-
-                    if (code.indexOf(term) > -1 || name.indexOf(term) > -1) {
-                        rows[i].style.display = '';
+                clearTimeout(searchTimer);
+                const term = this.value.trim();
+                
+                searchTimer = setTimeout(function() {
+                    if (term.length > 0) {
+                        // Mostrar indicador de carga
+                        tableContainer.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Cargando...</span></div></div>';
+                        
+                        // Realizar búsqueda AJAX
+                        fetch(`/inventory/search?query=${encodeURIComponent(term)}`, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            tableContainer.innerHTML = html;
+                        })
+                        .catch(error => {
+                            console.error('Error en la búsqueda:', error);
+                            tableContainer.innerHTML = '<div class="alert alert-danger">Error al realizar la búsqueda</div>';
+                        });
                     } else {
-                        rows[i].style.display = 'none';
+                        // Si el campo está vacío, recargar la vista original
+                        window.location.href = "{{ route('inventory.index') }}";
                     }
-                }
+                }, 500); // Esperar 500ms después de que el usuario deje de escribir
             });
         });
     </script>
 @endsection
-
