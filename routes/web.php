@@ -107,7 +107,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('products.update');
 
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
-
+    
 
     // Rutas de inventario (solo admin)
     Route::get('/inventory', function () {
@@ -142,6 +142,13 @@ Route::middleware(['auth'])->group(function () {
         return app()->call([app(App\Http\Controllers\InventarioController::class), 'buscarProducto'], ['request' => $request]);
     })->name('inventario.buscar-producto');
     
+    Route::get('/inventory/search', function (Illuminate\Http\Request $request) {
+         if (Auth::user()->rol !== 'admin') {
+             return redirect()->route('sales.create')
+                 ->with('error', 'No tienes permiso para acceder a esta sección.');
+         }
+         return app()->call([app(InventoryController::class), 'search'], ['request' => $request]);
+     })->name('inventory.search');
     Route::get('/inventory/search', function (Illuminate\Http\Request $request) {
         if (Auth::user()->rol !== 'admin') {
             return redirect()->route('sales.create')
