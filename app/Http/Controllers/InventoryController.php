@@ -8,20 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class InventoryController extends Controller
 {
-    public function search(Request $request)
-{
-    $query = $request->get('query');
-    
-    $products = Product::where('name', 'like', "%{$query}%")
-                      ->orWhere('code', 'like', "%{$query}%")
-                      ->paginate(10);
-    
-    if($request->ajax()) {
-        return view('inventory.partials.products_table', compact('products'))->render();
-    }
-    
-    return view('inventory.index', compact('products'));
-}
     public function index()
     {
         $products = Product::paginate(10);
