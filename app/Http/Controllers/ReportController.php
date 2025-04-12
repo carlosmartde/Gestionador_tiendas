@@ -63,6 +63,7 @@ public function index(Request $request)
         return view('reports.detail', compact('sale'));
     }
     
+    
     private function getSalesByPeriod($period, $date, $userId)
     {
         $query = Sale::with('user')
