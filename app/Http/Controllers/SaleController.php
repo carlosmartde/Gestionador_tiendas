@@ -18,32 +18,32 @@ class SaleController extends Controller
     {
         return view('sales.create');
     }
-
+    
     public function searchProductByCode($code)
     {
         try {
             Log::info('Buscando producto con código: ' . $code);
-
+            
             $product = Product::where('code', (string) $code)->first();
-
+            
             if (!$product) {
                 Log::info('Producto no encontrado para el código: ' . $code);
                 return response()->json(['error' => 'Producto no encontrado'], 404);
             }
-
+            
             if ($product->stock <= 0) {
                 Log::info('Producto sin stock: ' . $product->code . ' - ' . $product->name);
                 return response()->json(['error' => 'El producto no tiene stock disponible'], 400);
             }
-
+            
             Log::info('Producto encontrado: ' . $product->id . ' - ' . $product->name);
             return response()->json($product);
-
+            
         } catch (\Exception $e) {
             // Registra el error detallado
             Log::error('Error al buscar producto: ' . $e->getMessage());
             Log::error('Stack trace: ' . $e->getTraceAsString());
-
+            
             // Devuelve el mensaje de error específico en desarrollo
             if (config('app.debug')) {
                 return response()->json([
@@ -52,11 +52,11 @@ class SaleController extends Controller
                     'line' => $e->getLine()
                 ], 500);
             }
-
+            
             return response()->json(['error' => 'Error al buscar el producto. Intente nuevamente.'], 500);
         }
     }
-
+    
     public function store(Request $request)
     {
         try {
@@ -73,7 +73,7 @@ class SaleController extends Controller
             // Verificar el stock antes de procesar la venta
             foreach ($request->products as $product) {
                 $productModel = Product::find($product['id']);
-
+                
                 if (!$productModel) {
                     DB::rollback();
                     return response()->json([
@@ -81,7 +81,7 @@ class SaleController extends Controller
                         'message' => 'Producto con ID ' . $product['id'] . ' no encontrado'
                     ], 404);
                 }
-
+                
                 if ($productModel->stock < $product['quantity']) {
                     DB::rollback();
                     return response()->json([
@@ -97,25 +97,17 @@ class SaleController extends Controller
             ]);
 
             foreach ($request->products as $product) {
-                $productModel = Product::find($product['id']);
-                $quantity = $product['quantity'];
-                $price = $product['price'];
-                $subtotal = $product['subtotal'];
-                $cost_total = $productModel->purchase_price * $quantity;
-                $profit = $subtotal - $cost_total;
-
                 SaleDetail::create([
                     'sale_id' => $sale->id,
-                    'product_id' => $productModel->id,
-                    'quantity' => $quantity,
-                    'price' => $price,
-                    'subtotal' => $subtotal,
-                    'cost_total' => $cost_total,
-                    'profit' => $profit
+                    'product_id' => $product['id'],
+                    'quantity' => $product['quantity'],
+                    'price' => $product['price'],
+                    'subtotal' => $product['subtotal'],
                 ]);
 
                 // Actualizar stock
-                $productModel->stock -= $quantity;
+                $productModel = Product::find($product['id']);
+                $productModel->stock -= $product['quantity'];
                 $productModel->save();
             }
 
@@ -126,7 +118,7 @@ class SaleController extends Controller
             DB::rollback();
             Log::error('Error al procesar la venta: ' . $e->getMessage());
             return response()->json([
-                'success' => false,
+                'success' => false, 
                 'message' => 'Error al procesar la venta: ' . $e->getMessage()
             ], 500);
         }
