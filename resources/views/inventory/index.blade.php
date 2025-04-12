@@ -82,6 +82,7 @@
                 <!-- Paginación estilo Bootstrap -->
                 <div class="d-flex justify-content-center mt-4">
                     {{ $products->onEachSide(1)->links('vendor.pagination.bootstrap-5') }}
+                    <!-- php artisan vendor:publish --tag=laravel-pagination -->
                 </div>
 
 
