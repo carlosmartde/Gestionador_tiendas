@@ -27,7 +27,7 @@
             --card-background: #ffffff;
             --sidebar-bg: #212529;
             --sidebar-text: #f8f9fa;
-            --sidebar-hover: #3a86ff;
+            --sidebar-hover: #FFAFCC;   /*Cambiar este color si no convence*/
             --sidebar-active: #ff006e;
         }
 
@@ -36,16 +36,19 @@
             flex-direction: column;
             min-height: 100vh;
             background-color: var(--background-color);
+            padding-top: 56px; /* Altura de la navbar */
         }
 
         .content-wrapper {
             display: flex;
             flex: 1;
+            position: relative;
+            min-height: calc(100vh - 56px - 44px); 
         }
 
         .sidebar {
             width: 250px;
-            background-color: var(--sidebar-bg);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             position: fixed;
             top: 56px;
@@ -54,6 +57,7 @@
             z-index: 100;
             padding: 20px 0;
             overflow-y: auto;
+            height: calc(100vh - 5px - 44px); /* Altura ajustada para dejar espacio al footer */
         }
 
         .sidebar .nav-link {
@@ -102,6 +106,7 @@
             width: calc(100% - 250px);
             padding: 20px;
             transition: margin-left 0.3s;
+            min-height: 100%;
         }
 
         /* Estilos cuando el contenido debe ocupar toda la pantalla */
@@ -111,17 +116,14 @@
         }
 
         footer {
-            margin-left: 250px;
-            width: calc(100% - 250px);
-            transition: margin-left 0.3s;
+            height: 44px; /* Altura fija para el footer */
             background-color: var(--dark-color) !important;
             color: var(--light-color) !important;
-        }
-
-        /* Estilos de footer cuando debe ocupar toda la pantalla */
-        footer.w-100 {
-            margin-left: 0;
             width: 100%;
+            z-index: 101; /* Asegura que esté por encima de otros elementos */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Estilos para las cards */
@@ -171,14 +173,12 @@
                 margin-left: 0;
             }
 
-            .main-content,
-            footer {
+            .main-content {
                 margin-left: 0;
                 width: 100%;
             }
 
-            .main-content.sidebar-open,
-            footer.sidebar-open {
+            .main-content.sidebar-open {
                 margin-left: 250px;
                 width: calc(100% - 250px);
             }
@@ -254,7 +254,7 @@
         </div>
     </nav>
 
-    <div class="content-wrapper" style="margin-top: 56px;">
+    <div class="content-wrapper">
         <!-- Sidebar - solo se muestra si no es la página de welcome y el usuario está autenticado -->
         @auth
             @if(!$isWelcomePage)
@@ -320,7 +320,7 @@
         </main>
     </div>
 
-    <footer class="text-center py-3 {{ $isWelcomePage ? 'w-100 m-0' : '' }}">
+    <footer class="text-center py-3">
         <p class="m-0">MINI-MARKET &copy; {{ date('Y') }}</p>
     </footer>
 
@@ -330,17 +330,17 @@
             const sidebarToggle = document.getElementById('sidebarToggle');
             const sidebar = document.querySelector('.sidebar');
             const mainContent = document.querySelector('.main-content');
-            const footer = document.querySelector('footer');
 
             if (sidebarToggle && sidebar) {
                 sidebarToggle.addEventListener('click', function () {
                     sidebar.classList.toggle('show');
                     mainContent.classList.toggle('sidebar-open');
-                    footer.classList.toggle('sidebar-open');
                 });
             }
         });
     </script>
+    
+    <!-- Scripts restantes sin cambios -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Reemplazar los selects problemáticos
